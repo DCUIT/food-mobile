@@ -2,12 +2,22 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3, json
 from flask_jwt_extended import *
+from functools import wraps
 
 app = Flask(__name__)
 CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "secret"
 jwt = JWTManager(app)
+
+def admin_required(f):
+    @jwt_required()
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if get_jwt_identity() != 'admin':
+            return jsonify({"msg": "Admin only"}), 403
+        return f(*args, **kwargs)
+    return decorated
 
 def get_db():
     conn = sqlite3.connect("database.db")
@@ -71,7 +81,7 @@ def foods():
 
 # ADD FOOD
 @app.route("/foods", methods=["POST"])
-@jwt_required()
+@admin_required
 def add_food():
     data = request.json
     db = get_db()
@@ -116,7 +126,7 @@ def get_orders():
 
 # DELETE FOOD
 @app.route("/foods/<int:food_id>", methods=["DELETE"])
-@jwt_required()
+@admin_required
 def delete_food(food_id):
     db = get_db()
     db.execute("DELETE FROM foods WHERE id=?", (food_id,))
@@ -125,7 +135,7 @@ def delete_food(food_id):
 
 # UPDATE FOOD
 @app.route("/foods/<int:food_id>", methods=["PUT"])
-@jwt_required()
+@admin_required
 def update_food(food_id):
     data = request.json
     db = get_db()
@@ -138,7 +148,7 @@ def update_food(food_id):
 
 # STATS
 @app.route("/stats")
-@jwt_required()
+@admin_required
 def get_stats():
     db = get_db()
     
