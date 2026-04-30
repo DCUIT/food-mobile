@@ -1,27 +1,34 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3, json
+import os
 from flask_jwt_extended import *
 from functools import wraps
+from datetime import timedelta
 
 app = Flask(__name__)
 CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "secret"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)  # Token valid for 24 hours
 jwt = JWTManager(app)
+
+# Database path - use absolute path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "database.db")
 
 def admin_required(f):
     @jwt_required()
     @wraps(f)
     def decorated(*args, **kwargs):
         user_id = get_jwt_identity()
-        if user_id != 1:
+        if str(user_id) != "1":
             return jsonify({"msg": "Admin only"}), 403
         return f(*args, **kwargs)
     return decorated
 
 def get_db():
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -67,7 +74,7 @@ def login():
     if not user:
         return jsonify({"msg": "Sai tài khoản"}), 401
 
-    token = create_access_token(identity=user["id"], additional_claims={"username": user["username"]})
+    token = create_access_token(identity=str(user["id"]), additional_claims={"username": user["username"]})
     return jsonify(access_token=token, username=user["username"])
 
 # FOODS
@@ -151,6 +158,25 @@ def update_food(food_id):
     )
     db.commit()
     return jsonify({"msg": "updated"})
+
+# UPDATE ORDER STATUS
+@app.route("/orders/<int:order_id>", methods=["PUT"])
+@admin_required
+def update_order_status(order_id):
+    data = request.json
+    db = get_db()
+    new_status = data.get("status")
+    
+    valid_statuses = ["pending", "paid", "cancelled", "refunded"]
+    if new_status not in valid_statuses:
+        return jsonify({"msg": "Invalid status"}), 400
+    
+    db.execute(
+        "UPDATE orders SET status=? WHERE id=?",
+        (new_status, order_id)
+    )
+    db.commit()
+    return jsonify({"msg": "updated", "status": new_status})
 
 # STATS
 @app.route("/stats")

@@ -1,6 +1,10 @@
 import sqlite3
+import os
 
-conn = sqlite3.connect("database.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "database.db")
+
+conn = sqlite3.connect(DB_PATH)
 c = conn.cursor()
 
 c.execute("DROP TABLE IF EXISTS users")
@@ -15,8 +19,8 @@ c.execute("CREATE TABLE orders (id INTEGER PRIMARY KEY, user_id INTEGER, items T
 c.execute("INSERT INTO users VALUES (NULL, 'admin', '123')")
 
 foods = [
-    ("Pizza", 100000, ""),
-    ("Burger", 50000, ""),
+    ("Pizza", 100000, "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=500"),
+    ("Burger", 50000, "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500"),
 ]
 
 c.executemany("INSERT INTO foods (name, price, image) VALUES (?, ?, ?)", foods)

@@ -119,13 +119,45 @@ export default function Admin() {
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
   };
 
-  // Parse order items
+// Parse order items
   const parseItems = (itemsStr) => {
     try {
       return JSON.parse(itemsStr);
     } catch {
       return [];
     }
+  };
+
+  // Update order status
+  async function updateOrderStatus(orderId, newStatus) {
+    try {
+      await API.put(`/orders/${orderId}`, { status: newStatus }, authHeader);
+      fetchOrders();
+      setSuccess(`Đã cập nhật trạng thái đơn #${orderId}`);
+    } catch (err) {
+      setError("Cập nhật thất bại");
+    }
+  }
+
+  // Status badge color
+  const getStatusBadge = (status) => {
+    const colors = {
+      pending: "bg-yellow-100 text-yellow-800",
+      paid: "bg-green-100 text-green-800",
+      cancelled: "bg-red-100 text-red-800",
+      refunded: "bg-gray-100 text-gray-800"
+    };
+    const labels = {
+      pending: "Chờ xử lý",
+      paid: "Đã thanh toán",
+      cancelled: "Đã hủy",
+      refunded: "Đã hoàn tiền"
+    };
+    return (
+      <span className={`px-2 py-1 rounded text-xs font-semibold ${colors[status] || colors.pending}`}>
+        {labels[status] || status}
+      </span>
+    );
   };
 
   return (
@@ -252,7 +284,7 @@ export default function Admin() {
         </div>
       )}
 
-      {/* ORDERS TAB */}
+{/* ORDERS TAB */}
       {activeTab === TABS.ORDERS && (
         <div className="bg-white dark:bg-gray-800 rounded shadow p-4">
           <h3 className="font-bold mb-4">Danh sách đơn hàng ({orders.length})</h3>
@@ -270,8 +302,21 @@ export default function Admin() {
                         <span className="font-semibold">Đơn hàng #{order.id}</span>
                         <span className="ml-2 text-gray-500 text-sm">by {order.user}</span>
                       </div>
-                      <span className="text-yellow-600 font-bold">{formatPrice(total)}</span>
+                      <div className="flex items-center gap-2">
+                        {getStatusBadge(order.status)}
+                        <select
+                          value={order.status}
+                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                          className="text-sm border rounded px-2 py-1"
+                        >
+                          <option value="pending">Chờ xử lý</option>
+                          <option value="paid">Đã thanh toán</option>
+                          <option value="cancelled">Hủy</option>
+                          <option value="refunded">Hoàn tiền</option>
+                        </select>
+                      </div>
                     </div>
+                    <div className="text-yellow-600 font-bold mb-2">{formatPrice(total)}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
                       {items.map((item, idx) => (
                         <div key={idx} className="flex justify-between">

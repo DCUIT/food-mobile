@@ -10,6 +10,8 @@ export default function Payment() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('success');
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const cartData = JSON.parse(localStorage.getItem('cart') || '[]');
