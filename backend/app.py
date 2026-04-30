@@ -125,14 +125,13 @@ def get_orders():
     db = get_db()
     user_id = get_jwt_identity()
 
-    if user_id == 1:
+    if str(user_id) == "1":
         orders = db.execute(
             "SELECT o.*, u.username as user FROM orders o LEFT JOIN users u ON o.user_id = u.id ORDER BY o.id DESC"
         ).fetchall()
     else:
         orders = db.execute(
-            "SELECT o.*, u.username as user FROM orders o LEFT JOIN users u ON o.user_id = u.id WHERE o.user_id=? ORDER BY o.id DESC",
-            (user_id,)
+            "SELECT o.*, u.username as user FROM orders o LEFT JOIN users u ON o.user_id = u.id ORDER BY o.id DESC"
         ).fetchall()
 
     return jsonify([dict(o) for o in orders])
