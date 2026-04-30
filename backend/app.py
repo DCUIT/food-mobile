@@ -161,7 +161,7 @@ def update_food(food_id):
     db.commit()
     return jsonify({"msg": "updated"})
 
-# UPDATE ORDER STATUS
+# UPDATE ORDER STATUS (admin only)
 @app.route("/orders/<int:order_id>", methods=["PUT"])
 @admin_required
 def update_order_status(order_id):
@@ -179,6 +179,32 @@ def update_order_status(order_id):
     )
     db.commit()
     return jsonify({"msg": "updated", "status": new_status})
+
+# CANCEL ORDER (user can cancel their own pending orders)
+@app.route("/orders/<int:order_id>/cancel", methods=["PUT"])
+@jwt_required()
+def cancel_order(order_id):
+    user_id = get_jwt_identity()
+    db = get_db()
+    
+    # Check if order exists and belongs to user
+    order = db.execute(
+        "SELECT * FROM orders WHERE id=? AND user_id=?",
+        (order_id, user_id)
+    ).fetchone()
+    
+    if not order:
+        return jsonify({"msg": "Order not found"}), 404
+    
+    if order["status"] != "pending":
+        return jsonify({"msg": "Can only cancel pending orders"}), 400
+    
+    db.execute(
+        "UPDATE orders SET status='cancelled' WHERE id=?",
+        (order_id,)
+    )
+    db.commit()
+    return jsonify({"msg": "order cancelled", "status": "cancelled"})
 
 # STATS
 @app.route("/stats")
