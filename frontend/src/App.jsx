@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
 import Payment from "./pages/Payment";
+import Success from "./pages/Success";
 
 export default function App() {
   return (
@@ -15,10 +16,11 @@ export default function App() {
       <div className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/menu" element={<Menu />} />
+          <Route path="/my-orders" element={<Menu />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/success" element={<Success />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>

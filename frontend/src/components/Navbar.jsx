@@ -5,6 +5,7 @@ export default function Navbar() {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [cartCount, setCartCount] = useState(0);
+  const [cartBounce, setCartBounce] = useState(false);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -14,7 +15,14 @@ export default function Navbar() {
       setCartCount(cart.reduce((sum, item) => sum + (item.quantity || 0), 0));
     };
 
+    const handleCartBounce = () => {
+      setCartBounce(true);
+      setTimeout(() => setCartBounce(false), 600); // Duration of bounce animation
+    };
+
     window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("cartBounce", handleCartBounce);
+
     // Polling để cập nhật giỏ hàng nhanh hơn
     const interval = setInterval(() => {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -23,6 +31,7 @@ export default function Navbar() {
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("cartBounce", handleCartBounce);
       clearInterval(interval);
     };
   }, []);
@@ -46,7 +55,7 @@ localStorage.removeItem("username");
 
         <nav className="hidden md:flex space-x-6 font-medium text-gray-700">
           <Link to="/" className="hover:text-green-600 transition">Trang Chủ</Link>
-          <Link to="/menu" className="hover:text-green-600 transition">Đơn Đã Đặt</Link>
+          <Link to="/my-orders" className="hover:text-green-600 transition">Đơn Đã Đặt</Link>
           <Link to="/" className="hover:text-green-600 transition">Ưu Đãi</Link>
           <Link to="/" className="hover:text-green-600 transition">Liên Hệ</Link>
         </nav>
@@ -78,7 +87,7 @@ localStorage.removeItem("username");
             </Link>
           )}
           <Link to="/cart" className="relative text-gray-600 hover:text-green-600 transition">
-            <i className="fas fa-shopping-cart text-xl"></i>
+            <i className={`fas fa-shopping-cart text-xl ${cartBounce ? 'animate-bounce' : ''}`}></i>
             {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {cartCount}

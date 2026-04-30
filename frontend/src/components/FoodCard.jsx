@@ -1,7 +1,39 @@
 import { useState } from "react";
+import Toast from "./Toast";
 
 export default function FoodCard({ food, onAdd }) {
   const [quantity, setQuantity] = useState(1);
+  const [buttonText, setButtonText] = useState(`Thêm ${quantity} vào giỏ`);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const handleAddToCart = () => {
+    if (!localStorage.getItem('token')) {
+      localStorage.removeItem('cart');
+      window.dispatchEvent(new Event('storage'));
+      alert('Vui lòng đăng nhập để thêm vào giỏ hàng!');
+      window.location.href = '/login';
+      return;
+    }
+
+    onAdd({ id: food.id, quantity });
+
+    // Show toast
+    setToastMessage(`Đã thêm ${quantity} ${food.name} vào giỏ!`);
+    setShowToast(true);
+
+    // Change button text temporarily
+    setButtonText("✔ Đã thêm");
+    setTimeout(() => {
+      setButtonText(`Thêm ${quantity} vào giỏ`);
+    }, 2000);
+
+    // Trigger cart icon bounce
+    window.dispatchEvent(new CustomEvent('cartBounce'));
+
+    setQuantity(1); // Reset after add
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden group">
       <div className="relative overflow-hidden">
@@ -34,23 +66,19 @@ export default function FoodCard({ food, onAdd }) {
           </button>
         </div>
         <button
-          onClick={() => {
-if (!localStorage.getItem('token')) {
-            localStorage.removeItem('cart');
-            window.dispatchEvent(new Event('storage'));
-            alert('Vui lòng đăng nhập để thêm vào giỏ hàng!');
-            window.location.href = '/login';
-            return;
-          }
-            onAdd({ id: food.id, quantity });
-
-            setQuantity(1); // Reset after add
-          }}
+          onClick={handleAddToCart}
           className="w-full bg-orange-500 text-white py-2.5 rounded-lg font-bold hover:bg-orange-600 transition shadow-md shadow-orange-200"
         >
-          Thêm {quantity} vào giỏ
+          {buttonText}
         </button>
       </div>
+      {showToast && (
+        <Toast
+          message={toastMessage}
+          type="success"
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../api';
+import Toast from '../components/Toast';
 
 export default function Payment() {
   const [cart, setCart] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
 
   useEffect(() => {
     const cartData = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -28,7 +30,9 @@ export default function Payment() {
 
   const handleOrder = async () => {
     if (!token) {
-      alert('Vui lòng đăng nhập để đặt hàng');
+      setToastMessage('Vui lòng đăng nhập để đặt hàng');
+      setToastType('error');
+      setShowToast(true);
       navigate('/login');
       return;
     }
@@ -44,10 +48,14 @@ export default function Payment() {
       });
       localStorage.removeItem('cart');
       window.dispatchEvent(new Event('storage'));
-      alert('Đặt hàng thành công! Kiểm tra Menu.');
-      navigate('/menu');
+      setToastMessage('🎉 Đặt hàng thành công! Đang chuyển hướng...');
+      setToastType('success');
+      setShowToast(true);
+      setTimeout(() => navigate('/success'), 1500);
     } catch (error) {
-      alert('Lỗi đặt hàng: ' + error.response?.data?.msg || error.message);
+      setToastMessage('Lỗi đặt hàng: ' + error.response?.data?.msg || error.message);
+      setToastType('error');
+      setShowToast(true);
     }
     setLoading(false);
   };
@@ -155,6 +163,15 @@ export default function Payment() {
           </div>
         </div>
       </div>
+
+      {/* Toast */}
+      {showToast && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </div>
   );
 }
