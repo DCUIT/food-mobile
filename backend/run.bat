@@ -1,0 +1,6 @@
+@echo off
+echo Initializing DB...
+python init_db.py
+echo Starting API on http://localhost:5000...
+python app.py
+pause
