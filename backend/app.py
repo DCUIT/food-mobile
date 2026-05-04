@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import sqlite3
-import json
+import sqlite3, json
+import os
 from flask_jwt_extended import *
 from functools import wraps
 from datetime import timedelta
@@ -9,11 +9,23 @@ from datetime import timedelta
 app = Flask(__name__)
 CORS(app, origins="*")
 
-app.config["JWT_SECRET_KEY"] = "flutter-food-secret"
+app.config["JWT_SECRET_KEY"] = "secret"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 jwt = JWTManager(app)
 
-DB_PATH = "database.db"
+# Database path - absolute
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "database.db")
+
+def admin_required(f):
+    @jwt_required()
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        user_id = get_jwt_identity()
+        if str(user_id) != "1":
+            return jsonify({"msg": "Admin only"}), 403
+        return f(*args, **kwargs)
+    return decorated
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -61,9 +73,19 @@ def init_db():
     db.commit()
     return jsonify({"msg": "DB initialized, admin/123 ready!"})
 
-# Auth
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.json
+    db = get_db()
+    existing = db.execute("SELECT * FROM users WHERE username=?", (data["username"],)).fetchone()
+    if existing:
+        return jsonify({"msg": "Username exists"}), 400
+    db.execute("INSERT INTO users (username, password) VALUES (?, ?)", 
+              (data["username"], data["password"]))
+    db.commit()
+    return jsonify({"msg": "Đăng ký OK"})
+
 @app.route("/login", methods=["POST"])
-@jwt_required()
 def login():
     data = request.json
     db = get_db()
@@ -74,19 +96,6 @@ def login():
         return jsonify(access_token=token, username=user["username"])
     return jsonify({"msg": "Sai tài khoản"}), 401
 
-@app.route("/register", methods=["POST"])
-def register():
-    data = request.json
-    db = get_db()
-    try:
-        db.execute("INSERT INTO users (username, password) VALUES (?, ?)", 
-                  (data["username"], data["password"]))
-        db.commit()
-        return jsonify({"msg": "Đăng ký OK"})
-    except:
-        return jsonify({"msg": "Username exists"}), 400
-
-# Foods
 @app.route("/foods")
 def foods():
     db = get_db()
@@ -96,7 +105,8 @@ def foods():
 @app.route("/foods", methods=["POST"])
 @jwt_required()
 def add_food():
-    if get_jwt_identity() != "1": return jsonify({"msg": "Admin only"}), 403
+    if get_jwt_identity() != "1": 
+        return jsonify({"msg": "Admin only"}), 403
     data = request.json
     db = get_db()
     db.execute("INSERT INTO foods (name, price, image) VALUES (?, ?, ?)", 
@@ -104,7 +114,6 @@ def add_food():
     db.commit()
     return jsonify({"msg": "Added"})
 
-# Orders
 @app.route("/order", methods=["POST"])
 @jwt_required()
 def order():
@@ -129,4 +138,3 @@ def get_orders():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-

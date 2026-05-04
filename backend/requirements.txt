@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 flask==2.3.3
 flask-cors==4.0.0
 flask-jwt-extended==4.5.3
+=======
+flask
+flask-cors
+flask-jwt-extended
+gunicorn
+>>>>>>> 8054ecc090681fe39567fc2d6ccb1cb63e7d1648
