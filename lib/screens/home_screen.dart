@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/food.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/food_provider.dart';
 import '../widgets/banner_widget.dart';
-import 'cart_screen.dart';
-import 'menu_history_screen.dart';
-import 'admin_screen.dart';
 import '../widgets/food_card.dart';
+import 'cart_screen.dart';
+import 'favorite_screen.dart';
+import 'menu_history_screen.dart';
+import 'profile_screen.dart';
+import 'admin_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,9 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _screens = [
       const FoodListTab(),
       CartScreen(),
+      const FavoriteScreen(),
       MenuHistoryScreen(),
+      const ProfileScreen(),
       if (Provider.of<AuthProvider>(context, listen: false).isAdmin) const AdminScreen(),
-    ];
+    ]; 
   }
 
   @override
@@ -75,12 +77,14 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         items: [
-          const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
-          const BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Giỏ hàng'),
-          const BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Đơn hàng'),
+          const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          const BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+          const BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorite'),
+          const BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Profile'),
           if (auth.isAdmin)
-            const BottomNavigationBarItem(icon: Icon(Icons.admin_panel_settings), label: 'Quản lý'),
+            const BottomNavigationBarItem(icon: Icon(Icons.admin_panel_settings), label: 'Admin'),
         ],
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
