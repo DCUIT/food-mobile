@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../providers/auth_provider.dart';
-import '../providers/food_provider.dart';
-import 'home_screen.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/food_provider.dart';
+import '../home_screen.dart';
 
 class AuthLoginScreen extends StatefulWidget {
   const AuthLoginScreen({super.key});
@@ -111,5 +111,4 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
     );
   }
 }
-
 
