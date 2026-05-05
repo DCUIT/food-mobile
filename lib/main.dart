@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'constants/theme_constants.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/food_provider.dart';
@@ -28,11 +29,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hương Vị Việt - Food App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-      ),
+      theme: appTheme(),
+
       home: const AuthWrapper(),
       debugShowCheckedModeBanner: false,
     );

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/food.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/food_provider.dart';
+import '../widgets/banner_widget.dart';
 import 'cart_screen.dart';
 import 'menu_history_screen.dart';
 import 'admin_screen.dart';
+import '../widgets/food_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -107,71 +110,60 @@ class FoodListTab extends StatelessWidget {
             ),
           );
         }
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-          ),
-          itemCount: foodProvider.foods.length,
-          itemBuilder: (context, index) {
-            final food = foodProvider.foods[index];
-            return FoodCard(food: food);
-          },
-        );
-      },
-    );
-  }
-}
-
-class FoodCard extends StatelessWidget {
-  final Food food;
-  const FoodCard({super.key, required this.food});
-
-  @override
-  Widget build(BuildContext context) {
-    final cart = Provider.of<CartProvider>(context);
-    return Card(
-      elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: CachedNetworkImage(
-                imageUrl: food.image.isNotEmpty ? food.image : 'https://via.placeholder.com/150?text=Food',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                placeholder: (context, url) => const Icon(Icons.restaurant, size: 50),
-                errorWidget: (context, url, error) => const Icon(Icons.error, size: 50),
+return CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  const BannerWidget(),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Tìm món ăn...',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Thực Đơn Đa Dạng',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(food.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                const SizedBox(height: 4),
-                Text('${food.price.toStringAsFixed(0)}đ', style: const TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => cart.addToCart(food),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                    child: const Text('Thêm vào giỏ'),
-                  ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
                 ),
-              ],
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final food = foodProvider.foods[index];
+                    return FoodCard(food: food);
+                  },
+                  childCount: foodProvider.foods.length,
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }

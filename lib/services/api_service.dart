@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../constants/api_constants.dart';
 import '../models/food.dart';
 import '../models/order.dart';
 
 class ApiService {
-static const String baseUrl = 'http://10.0.2.2:5000';
+static const String baseUrl = apiBaseUrl;
 
   // Get all foods
   static Future<List<Food>> getFoods() async {
