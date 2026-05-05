@@ -1,74 +1,65 @@
-# 🌶️ Hương Vị Việt - Food Delivery App
+# Hương Vị Việt - Flutter Food App 🍜✨
 
-![Screenshot](assets/images/screenshot-home.png)
-![Screenshot](assets/images/screenshot-cart.png)
+![Screenshot Home](assets/screenshots/home.png)
+![Screenshot Cart](assets/screenshots/cart.png)
+![Screenshot Admin](assets/screenshots/admin.png)
 
-## ✨ **Features**
-- 📱 **Responsive UI** (Mobile/Tablet)
-- 👨‍🍳 **Full Food Menu** (Grid + Search + Detail)
-- 🛒 **Shopping Cart** (+/- Qty + COD/Bank payment)
-- ❤️ **Favorites** (Persist local)
-- 📋 **Order History**
-- 👑 **Admin Panel** (CRUD foods/orders)
-- 🔐 **Auth** (Login/Register/JWT)
-- 🌙 **Dark Mode Ready**
+## 🚀 Features
+✅ **User**: Browse menu → Cart → COD/Bank/E-wallet → Order history  
+✅ **Admin**: CRUD foods, order management, stats  
+✅ **Search** real-time, **Favorites** ❤️  
+✅ **Auth** JWT + auto-login  
+✅ **Dark mode**, responsive UI  
 
-## 🛠️ **Tech Stack**
+## 🛠 Tech Stack
 ```
-Frontend: Flutter • Provider • go_router • Dio
-Backend: Flask (Python) • SQLite • JWT
-Storage: shared_preferences
-Colors: Custom Design System
+Flutter • Provider • Dio • SharedPreferences
+Flask API • SQLite • JWT
+Material Design • go_router
 ```
 
-## 🚀 **Quick Start**
+## 📱 Quick Setup
 
-### 1️⃣ Backend
+### Backend (Flask)
 ```bash
-cd backend
-pip install -r requirements.txt
-python init_db.py  # Admin: admin/123 + demo foods
-python app.py      # http://localhost:5000
+cd "D:\Code\food-fullstack\backend"
+python init_db.py
+python app.py  # http://localhost:5000
 ```
 
-### 2️⃣ Frontend
+**Demo accounts:**
+| Username | Password | Role |
+|----------|----------|------|
+| admin    | 123      | Admin|
+
+### Frontend (Flutter)
 ```bash
+cd "d:/Flutter Projects/food_app"
 flutter pub get
-flutter run
-```
-*Chọn Android Emulator/Chrome*
-
-### 3️⃣ Demo Flow
-```
-Login → Home (Search "phở") → Detail → Cart → Thanh toán
-→ Favorite ❤️ → Admin → Orders
+flutter run  # Android/iOS/Web
 ```
 
-## 📱 **Screenshots**
-| Home | Cart | Admin |
-|------|------|-------|
-| ![Home](assets/images/screenshot-home.png) | ![Cart](assets/images/screenshot-cart.png) | ![Admin](assets/images/screenshot-admin.png) |
+## 🧪 API Endpoints
+| Method | Endpoint | Auth |
+|--------|----------|------|
+| GET    | /foods   | No   |
+| POST   | /login   | No   |
+| POST   | /order   | JWT  |
 
-## 🔧 **Troubleshooting**
-```
-flutter clean && flutter pub get
-Backend CORS OK (*)
-Emulator: http://10.0.2.2:5000
-```
-
-## 📂 **Structure**
+## 📁 Project Structure
 ```
 lib/
-├── constants/     # Colors/API/Theme
-├── models/        # Food/Cart/Order
-├── providers/     # State mgmt
-├── screens/       # UI Pages
-├── services/      # Dio API
-└── widgets/       # Reusable
-backend/           # Flask API
+├── providers/   # State management
+├── screens/     # Feature screens
+├── services/    # API + utils
+└── constants/   # Colors/theme/API
 ```
 
-**Made with ❤️ for Vietnamese food lovers!**
+## 🎯 Roadmap
+- Push notifications
+- Real payment (Momo/VNPay)
+- Location services
 
-⭐ Star nếu hữu ích!
+---
 
+**Made with ❤️ for Vietnamese food lovers! 🇻🇳**
