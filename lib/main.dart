@@ -6,7 +6,7 @@ import 'providers/cart_provider.dart';
 import 'providers/food_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/favorite_provider.dart';
-import 'screens/login_screen.dart' as AuthLoginScreen;
+import 'screens/auth/login_screen.dart';
 import 'screens/home_screen.dart';
 
 void main() {

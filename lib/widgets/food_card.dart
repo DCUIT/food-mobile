@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/food.dart';
 import '../providers/cart_provider.dart';
+import '../screens/food_detail_screen.dart';
 
 class FoodCard extends StatelessWidget {
   final Food food;
@@ -31,7 +32,9 @@ class FoodCard extends StatelessWidget {
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => FoodDetailScreen(food: food)),
+                MaterialPageRoute(
+                  builder: (context) => FoodDetailScreen(food: food),
+                ),
               );
             },
             child: Padding(
@@ -39,9 +42,15 @@ class FoodCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(food.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    food.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                   const SizedBox(height: 4),
-                  Text('${food.price.toStringAsFixed(0)}đ', style: const TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    '${food.price.toStringAsFixed(0)}đ',
+                    style: const TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   SizedBox(
                     width: double.infinity,
@@ -60,3 +69,4 @@ class FoodCard extends StatelessWidget {
     );
   }
 }
+

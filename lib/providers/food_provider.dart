@@ -6,7 +6,7 @@ class FoodProvider extends ChangeNotifier {
   List<Food> _filteredFoods = [];
   String _searchQuery = '';
 
-  List<Food> get foods => _filteredFoods.isNotEmpty ? _filteredFoods : _allFoods;
+  List<Food> get filteredFoods => _filteredFoods.isNotEmpty ? _filteredFoods : _allFoods;
   List<Food> get _allFoods => _foods; // private access
 
   void filterFoods(String query) {

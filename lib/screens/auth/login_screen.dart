@@ -27,22 +27,23 @@ class _AuthLoginScreenState extends State<AuthLoginScreen> {
       bool success = _isLogin
           ? await auth.login(_usernameController.text, _passwordController.text)
           : await auth.register(_usernameController.text, _passwordController.text);
-      if (success) {
-        if (!_isLogin) {
-          Fluttertoast.showToast(msg: 'Đăng ký thành công! Vui lòng đăng nhập.');
-          setState(() => _isLogin = true);
-        } else {
-          final foodProvider = Provider.of<FoodProvider>(context, listen: false);
-          await foodProvider.loadFoods(context);
-          if (mounted) {
+        if (success) {
+          if (!_isLogin) {
+            if (!mounted) return;
+            Fluttertoast.showToast(msg: 'Đăng ký thành công! Vui lòng đăng nhập.');
+            setState(() => _isLogin = true);
+          } else {
+            final foodProvider = Provider.of<FoodProvider>(context, listen: false);
+            await foodProvider.loadFoods(context);
+            if (!mounted) return;
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const HomeScreen()),
             );
           }
         }
-      }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Lỗi: Sai tài khoản/mật khẩu');
+            if (!mounted) return;
+            Fluttertoast.showToast(msg: 'Lỗi: Sai tài khẩu/mật khẩu');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

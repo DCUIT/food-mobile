@@ -34,9 +34,6 @@ class FavoriteProvider extends ChangeNotifier {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+
 }
 

@@ -3,7 +3,7 @@ import '../models/cart_item.dart';
 import '../models/food.dart';
 
 class CartProvider extends ChangeNotifier {
-  List<Food> _favorites = [];
+final List<Food> _favorites = [];
   List<Food> get favorites => _favorites;
 
   void toggleFavorite(Food food) {
