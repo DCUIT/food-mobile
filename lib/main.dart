@@ -5,7 +5,7 @@ import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/food_provider.dart';
 import 'providers/order_provider.dart';
-import 'screens/login_screen.dart';
+import 'screens/auth/login_screen.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -47,7 +47,7 @@ class AuthWrapper extends StatelessWidget {
         if (auth.isLoggedIn) {
           return const HomeScreen();
         }
-        return const AuthLoginScreen();
+        const AuthLoginScreen(),
       },
     );
   }
