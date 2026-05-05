@@ -4,7 +4,7 @@ import '../models/food.dart';
 import '../models/order.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:5000';
+static const String baseUrl = 'http://10.0.2.2:5000';
 
   // Get all foods
   static Future<List<Food>> getFoods() async {

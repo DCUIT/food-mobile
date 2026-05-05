@@ -33,10 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
           final foodProvider = Provider.of<FoodProvider>(context, listen: false);
           await foodProvider.loadFoods(context);
           if (!mounted) return;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
-          );
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            );
+          }
         }
       }
     } catch (e) {
