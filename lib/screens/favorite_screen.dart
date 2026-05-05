@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/food.dart';
-import '../providers/cart_provider.dart';
+import '../providers/favorite_provider.dart';
 import '../widgets/food_card.dart';
 
 class FavoriteScreen extends StatelessWidget {
@@ -11,7 +11,7 @@ class FavoriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CartProvider>(
+return Consumer<FavoriteProvider>(
       builder: (context, cart, child) {
         if (cart.favorites.isEmpty) {
           return const Center(

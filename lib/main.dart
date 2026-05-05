@@ -5,6 +5,7 @@ import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/food_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/favorite_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home_screen.dart';
 
@@ -16,6 +17,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => FoodProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
       ],
       child: const MyApp(),
     ),
@@ -30,8 +32,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hương Vị Việt - Food App',
       theme: appTheme(),
-
-      routerConfig: router,
+      home: const AuthWrapper(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -47,8 +48,9 @@ class AuthWrapper extends StatelessWidget {
         if (auth.isLoggedIn) {
           return const HomeScreen();
         }
-        const AuthLoginScreen(),
+        return const AuthLoginScreen();
       },
     );
   }
 }
+
