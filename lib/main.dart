@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       title: 'Hương Vị Việt - Food App',
       theme: appTheme(),
 
-      home: const AuthWrapper(),
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
   }
