@@ -121,17 +121,25 @@ return CustomScrollView(
                 children: [
                   const BannerWidget(),
                   const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Tìm món ăn...',
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  StatefulBuilder(
+                    builder: (context, setSearchState) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TextField(
+                        onChanged: (value) {
+                          final foodProvider = Provider.of<FoodProvider>(context, listen: false);
+                          foodProvider.filterFoods(value);
+                          setSearchState(() {});
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Tìm món ăn...',
+                          prefixIcon: const Icon(Icons.search),
+                          suffixIcon: const Icon(Icons.clear),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
-                        filled: true,
-                        fillColor: Colors.white,
                       ),
                     ),
                   ),
