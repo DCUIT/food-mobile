@@ -3,6 +3,20 @@ import '../models/cart_item.dart';
 import '../models/food.dart';
 
 class CartProvider extends ChangeNotifier {
+  List<Food> _favorites = [];
+  List<Food> get favorites => _favorites;
+
+  void toggleFavorite(Food food) {
+    final index = _favorites.indexWhere((f) => f.id == food.id);
+    if (index >= 0) {
+      _favorites.removeAt(index);
+    } else {
+      _favorites.add(food);
+    }
+    notifyListeners();
+  }
+
+  bool isFavorite(Food food) => _favorites.any((f) => f.id == food.id);
 final List<CartItem> _cart = [];
 
   List<CartItem> get cart => _cart;
